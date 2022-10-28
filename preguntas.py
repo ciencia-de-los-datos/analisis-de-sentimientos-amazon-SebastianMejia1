@@ -29,8 +29,8 @@ def pregunta_01():
     )
 
     # Separe los grupos de mensajes etiquetados y no etiquetados.
-    df_tagged = df[~df['lbl'].isna()]
-    df_untagged = df[df["lbl"].isna()] 
+    df_tagged = df[~df['lbl'].notnull()]
+    df_untagged = df[df["lbl"].isnull()] 
 
     x_tagged = df_tagged["msg"]
     y_tagged = df_tagged["lbl"]
@@ -117,8 +117,8 @@ def pregunta_04():
         analyzer=analyzer,
         lowercase=True_,
         stop_words="english",
-        token_pattern=r"(?u)\b\w\w+\b",
-        binary=False,
+        token_pattern=r"(?u)\b[a-zA-Z][a-zA-Z]+\b",
+        binary=True,
         max_df=1.0,
         min_df=5,
     )
@@ -169,17 +169,17 @@ def pregunta_05():
     gridSearchCV = pregunta_04()
 
     # Cargue las variables.
-    X_train, X_test, y_train, y_test = pregunta_02()
+    x_train, x_test, y_train, y_test = pregunta_02()
 
     # Evalúe el pipeline con los datos de entrenamiento usando la matriz de confusion.
     cfm_train = confusion_matrix(
         y_true=y_train,
-        y_pred=gridSearchCV.predict(X_train),
+        y_pred=gridSearchCV.predict(x_train),
     )
 
     cfm_test = confusion_matrix(
         y_true=y_test,
-        y_pred=gridSearchCV.predict(X_test),
+        y_pred=gridSearchCV.predict(x_test),
     )
 
     # Retorne la matriz de confusion de entrenamiento y prueba
